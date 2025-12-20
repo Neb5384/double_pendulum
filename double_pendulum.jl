@@ -113,10 +113,11 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time)
     scatter!(ax, dot2_obs, color=:red, markersize=10)
 
     # Create a GIF
-    interval = max(Int(1/dt/framerate),1)
+    framerate = 50
+    interval = max(floor(Int, 1/dt/framerate),1)
 
 
-    @time record(fig, "double_pendulum.gif", 1:interval:steps; framerate = 30) do i
+    @time record(fig, "double_pendulum.gif", 1:interval:steps; framerate) do i
         p1 = positions1[i]
         p2 = positions2[i]
         
@@ -130,7 +131,7 @@ end
 
 
 #define start variables-----
-dt = 0.000001
+dt = 0.0000005
 time = 5
 
 anchor = position(0,0)
