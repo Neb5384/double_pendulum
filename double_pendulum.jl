@@ -119,7 +119,7 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
     theta1s = [theta1]
     theta2s = [theta2]
 
-    println("calculating....")
+    println("simulating physics....")
 
     if method == "rk4"
         @time for i in 0:steps
@@ -146,7 +146,7 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
         push!(positions2, p2)
     end
 
-    println("calculations done ")
+    println("simulation done ")
 
     return positions1, positions2
 

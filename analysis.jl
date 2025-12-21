@@ -150,8 +150,9 @@ end
 
 
 function analyse_video(path)
+    println("analysing video ...")
 
-    if isfile("positions.jld2")
+    @time if isfile("positions.jld2")
         @load "positions.jld2" positions fps
     else
         fps, frames = get_frames(path)
@@ -167,6 +168,7 @@ function analyse_video(path)
     positions1 = [frame[2] for frame in positions_centered_flipped]
     positions2 = [frame[1] for frame in positions_centered_flipped]
 
+    println("analysis done")
     return positions1, positions2
 end
 

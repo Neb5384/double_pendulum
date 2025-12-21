@@ -10,14 +10,19 @@ positions1_ana, positions2_ana = analyse_video(path)
 
 #define start variables-----
 dt = 0.0000005
-time = 5
+time = 2
+
+pixelsperm = 2000
+
+first_pos1_ana = positions1_ana[1]
+first_pos2_ana = positions2_ana[2]
 
 anchor = position(0,0)
-point1 = position(0.5,0.5)
-point2 = position(01.2,1.2)
+point1 = position(first_pos1_ana[1]/pixelsperm,first_pos1_ana[2]/pixelsperm)
+point2 = position(first_pos2_ana[1]/pixelsperm,first_pos2_ana[2]/pixelsperm)
 
-m1 = 2
-m2 = 3
+m1 = 3
+m2 = 2
 
 w1_init = 0
 w2_init = 0
@@ -32,4 +37,6 @@ positions1_sim, positions2_sim = simulate(anchor, point1, point2, w1_init, w2_in
 
 create_gif_sim(positions1_sim,positions2_sim)
 create_gif_ana(positions1_ana, positions2_ana)
+
+println("done")
 
