@@ -1,9 +1,9 @@
-using Pkg
+#using Pkg
 # Pkg.add("ImageShow")
 # Pkg.add("VideoIO")
 # Pkg.add("Images")
-Pkg.add("JLD2")
-Pkg.add("FileIO")
+#Pkg.add("JLD2")
+#Pkg.add("FileIO")
 
 
 using VideoIO, Images,ImageShow, ImageMorphology, Statistics, GLMakie, JLD2, FileIO
@@ -110,7 +110,7 @@ function circle_center(p1, p2, p3)
     return (Cx, Cy)
 end
 
-function create_gif(positions1,positions2)
+function create_gif_ana(positions1,positions2)
     println("creating gif...")
 
     steps = length(positions1)
@@ -148,25 +148,25 @@ function create_gif(positions1,positions2)
     end
 end
 
-if isfile("positions.jld2")
-    @load "positions.jld2" positions fps
-else
-    fps, frames = get_frames("First_video_2s.mp4")
-    positions = get_positions(frames)
-    positions = reorder_positions(positions)
-    @save "positions.jld2" positions fps
+
+function analyse_video(path)
+
+    if isfile("positions.jld2")
+        @load "positions.jld2" positions fps
+    else
+        fps, frames = get_frames(path)
+        positions = get_positions(frames)
+        positions = reorder_positions(positions)
+        @save "positions.jld2" positions fps
+    end
+
+    center = circle_center(positions[1][2],positions[40][2],positions[60][2])
+
+    positions_centered_flipped = map(frame -> map(pos -> (pos[1] - center[1], -(pos[2] - center[2])), frame), positions)
+
+    positions1 = [frame[2] for frame in positions_centered_flipped]
+    positions2 = [frame[1] for frame in positions_centered_flipped]
+
+    return positions1, positions2
 end
-
-print(positions[1][2],positions[40][2],positions[60][2])
-center = circle_center(positions[1][2],positions[40][2],positions[60][2])
-print(center)
-positions_centered_flipped = map(frame -> map(pos -> (pos[1] - center[1], -(pos[2] - center[2])), frame), positions)
-
-positions1 = [frame[2] for frame in positions_centered_flipped]
-positions2 = [frame[1] for frame in positions_centered_flipped]
-
-create_gif(positions1,positions2)
-
-
-
 

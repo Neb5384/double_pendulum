@@ -1,6 +1,6 @@
 #imports-------------
-using Pkg
-Pkg.add("GLMakie")
+# using Pkg
+# Pkg.add("GLMakie")
 using GLMakie
 
 #constants-----------------------
@@ -152,7 +152,7 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
 
 end
 
-function create_gif(positions1,positions2)
+function create_gif_sim(positions1,positions2)
     println("creating gif...")
 
     steps = length(positions1)
