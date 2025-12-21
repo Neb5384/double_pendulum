@@ -12,7 +12,8 @@ positions1_ana, positions2_ana = analyse_video(path)
 dt = 0.0000005
 time = 2
 
-pixelsperm = 1500       #totally invented value
+pixelsperm = 2000       #totally invented value
+
 
 first_pos1_ana = positions1_ana[1]
 first_pos2_ana = positions2_ana[2]
@@ -21,8 +22,8 @@ anchor = position(0,0)
 point1 = position(first_pos1_ana[1]/pixelsperm,first_pos1_ana[2]/pixelsperm)
 point2 = position(first_pos2_ana[1]/pixelsperm,first_pos2_ana[2]/pixelsperm)
 
-m1 = 2
-m2 = 4
+m1 = 3
+m2 = 2
 
 w1_init = 0
 w2_init = 0

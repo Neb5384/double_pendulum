@@ -139,6 +139,7 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
     positions1 = [] 
     positions2 = []  
 
+    println("changing to cartesian coordinates...")
 
     @time for (th1, th2) in zip(theta1s, theta2s)
         p1, p2 = cartesian_pos(th1, th2, L1, L2)
