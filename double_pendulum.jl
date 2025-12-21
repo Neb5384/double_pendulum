@@ -148,17 +148,22 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
 
     println("calculations done ")
 
-    return L1, L2, positions1, positions2
+    return positions1, positions2
 
 end
 
-function create_gif(L1,L2,positions1,positions2)
+function create_gif(positions1,positions2)
     println("creating gif...")
 
     steps = length(positions1)
+
+    anchor = position(0,0)
+    L1 = distance(anchor,positions1[1])
+    L2 = distance(point1,positions2[2])
     max_length = L1 + L2
+
     fig = Figure(size=(600,600)) 
-    ax = Axis(fig[1,1], title="Pendulum Simulation", limits = ((-max_length, max_length), (-max_length, max_length)))
+    ax = GLMakie.Axis(fig[1,1], title="Pendulum Simulation", limits = ((-max_length, max_length), (-max_length, max_length)))
 
     # Create observables for the plot data
     line1_obs = Observable([Point2f(0.0, 0.0), Point2f(positions1[1].x, positions1[1].y)])
@@ -190,22 +195,3 @@ function create_gif(L1,L2,positions1,positions2)
 end
 
 
-#define start variables-----
-dt = 0.0000005
-time = 5
-
-anchor = position(0,0)
-point1 = position(0.5,0.5)
-point2 = position(01.2,1.2)
-
-m1 = 2
-m2 = 3
-
-w1_init = 0
-w2_init = 0
-
-method = "euler"
-
-#launch simulation-----
-L1, L2, positions1, positions2 = simulate(anchor, point1, point2, w1_init, w2_init, m1, m2, dt, time,method)
-create_gif(L1,L2,positions1,positions2)
