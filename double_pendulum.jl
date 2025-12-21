@@ -40,8 +40,14 @@ function cartesian_pos(theta1, theta2, L1, L2)
     return position(pos1_x,pos1_y), position(pos2_x, pos2_y)
 end
 
+function derivatives(g,L1,L2,m1,m2,theta1,theta2,w1,w2)
+    alpha1 = get_alpha1(g,L1,L2,m1,m2,w1,w2,theta1,theta2)
+    alpha2 = get_alpha2(g,L1,L2,m1,m2,w1,w2,theta1,theta2)
+    return w1, w2, alpha1, alpha2
+end
+
 #main funcs--------
-function pendulestep(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
+function euler_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
 
     alpha1 = get_alpha1(g,L1,L2,m1,m2,w1,w2,theta1,theta2)
     alpha2 = get_alpha2(g,L1,L2,m1,m2,w1,w2,theta1,theta2)
@@ -56,10 +62,49 @@ function pendulestep(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
 
 end
 
+function rk4_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
+    # k1
+    dtheta1_1, dtheta2_1, dw1_1, dw2_1 = derivatives(g,L1,L2,m1,m2,theta1,theta2,w1,w2)
+    
+    # k2
+    dtheta1_2, dtheta2_2, dw1_2, dw2_2 = derivatives(
+        g,L1,L2,m1,m2,
+        theta1 + 0.5*dt*dtheta1_1,
+        theta2 + 0.5*dt*dtheta2_1,
+        w1 + 0.5*dt*dw1_1,
+        w2 + 0.5*dt*dw2_1
+    )
+    
+    # k3
+    dtheta1_3, dtheta2_3, dw1_3, dw2_3 = derivatives(
+        g,L1,L2,m1,m2,
+        theta1 + 0.5*dt*dtheta1_2,
+        theta2 + 0.5*dt*dtheta2_2,
+        w1 + 0.5*dt*dw1_2,
+        w2 + 0.5*dt*dw2_2
+    )
+    
+    # k4
+    dtheta1_4, dtheta2_4, dw1_4, dw2_4 = derivatives(
+        g,L1,L2,m1,m2,
+        theta1 + dt*dtheta1_3,
+        theta2 + dt*dtheta2_3,
+        w1 + dt*dw1_3,
+        w2 + dt*dw2_3
+    )
+    
+    # combine increments
+    theta1_next = theta1 + dt*(dtheta1_1 + 2*dtheta1_2 + 2*dtheta1_3 + dtheta1_4)/6
+    theta2_next = theta2 + dt*(dtheta2_1 + 2*dtheta2_2 + 2*dtheta2_3 + dtheta2_4)/6
+    w1_next = w1 + dt*(dw1_1 + 2*dw1_2 + 2*dw1_3 + dw1_4)/6
+    w2_next = w2 + dt*(dw2_1 + 2*dw2_2 + 2*dw2_3 + dw2_4)/6
+    
+    return w1_next, w2_next, theta1_next, theta2_next
+end
 
 #simulation-------------------
 
-function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time)
+function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
 
     steps = Int(time / dt)
 
@@ -76,11 +121,20 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time)
 
     println("calculating....")
 
-    @time for i in 0:steps
-        w1, w2, theta1, theta2 = pendulestep(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
-        append!(theta1s,theta1)
-        append!(theta2s,theta2)
+    if method == "rk4"
+        @time for i in 0:steps
+            w1, w2, theta1, theta2 = rk4_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
+            append!(theta1s,theta1)
+            append!(theta2s,theta2)
+        end
+    else
+        @time for i in 0:steps
+            w1, w2, theta1, theta2 = euler_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
+            append!(theta1s,theta1)
+            append!(theta2s,theta2)
+        end
     end
+
 
     positions1 = [] 
     positions2 = []  
@@ -93,9 +147,15 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time)
     end
 
     println("calculations done ")
+
+    return L1, L2, positions1, positions2
+
+end
+
+function create_gif(L1,L2,positions1,positions2)
     println("creating gif...")
 
-
+    steps = length(positions1)
     max_length = L1 + L2
     fig = Figure(size=(600,600)) 
     ax = Axis(fig[1,1], title="Pendulum Simulation", limits = ((-max_length, max_length), (-max_length, max_length)))
@@ -144,5 +204,8 @@ m2 = 3
 w1_init = 0
 w2_init = 0
 
+method = "euler"
+
 #launch simulation-----
-simulate(anchor, point1, point2, w1_init, w2_init, m1, m2, dt, time)
+L1, L2, positions1, positions2 = simulate(anchor, point1, point2, w1_init, w2_init, m1, m2, dt, time,method)
+create_gif(L1,L2,positions1,positions2)
