@@ -161,7 +161,7 @@ function analyse_video(path)
         @save "positions.jld2" positions fps
     end
 
-    center = circle_center(positions[1][2],positions[40][2],positions[60][2])
+    center = circle_center(positions[1][2],positions[45][2],positions[58][2])           #the frames selected are at points 120 degrees from each other to get best center approx.
 
     positions_centered_flipped = map(frame -> map(pos -> (pos[1] - center[1], -(pos[2] - center[2])), frame), positions)
 
