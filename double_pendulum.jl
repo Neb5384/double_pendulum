@@ -16,6 +16,10 @@ function distance(pos1::position,pos2::position)
     return sqrt((pos1.x - pos2.x)^2 + (pos1.y -pos2.y)^2)
 end
 
+function squared_distance(pos1::position,pos2::position)
+    return (pos1.x - pos2.x)^2 + (pos1.y -pos2.y)^2
+end
+
 #helper funcs----------------
 function get_alpha1(g,L1,L2,m1,m2,w1,w2,theta1,theta2)
     delta = theta2 - theta1
@@ -104,9 +108,11 @@ end
 
 #simulation-------------------
 
-function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
 
+function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method, verbose = false)
+    
     steps = Int(time / dt)
+    verbose && println(steps)
 
     L1 = distance(anchor,point1)
     L2 = distance(point1,point2)
@@ -119,16 +125,16 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
     theta1s = [theta1]
     theta2s = [theta2]
 
-    println("simulating physics....")
+    verbose && println("simulating physics....")
 
     if method == "rk4"
-        @time for i in 0:steps
+        for i in 2:steps  #Julia counting starts at 1. and we already have qst step, hence 2
             w1, w2, theta1, theta2 = rk4_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
             append!(theta1s,theta1)
             append!(theta2s,theta2)
         end
     else
-        @time for i in 0:steps
+        for i in 2:steps
             w1, w2, theta1, theta2 = euler_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
             append!(theta1s,theta1)
             append!(theta2s,theta2)
@@ -139,15 +145,15 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method)
     positions1 = [] 
     positions2 = []  
 
-    println("changing to cartesian coordinates...")
+    verbose && println("changing to cartesian coordinates...")
 
-    @time for (th1, th2) in zip(theta1s, theta2s)
+    for (th1, th2) in zip(theta1s, theta2s)
         p1, p2 = cartesian_pos(th1, th2, L1, L2)
         push!(positions1, p1)
         push!(positions2, p2)
     end
 
-    println("simulation done ")
+    verbose && println("simulation done ")
 
     return positions1, positions2
 
