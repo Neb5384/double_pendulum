@@ -21,7 +21,6 @@ function get_frames(path_name)
     end
 
     VideoIO.close(vid)
-
     return fps, frames
 end
 

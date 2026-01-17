@@ -184,3 +184,74 @@ function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, metho
     end
     return best_params
 end
+
+
+#functions needed to calculate speed at end of video
+function calculate_angle(position1, position2)
+    x = position2.x - position1.x
+    y = - position2.y + position1.y
+
+    return atan(x, y)
+end
+
+function calculate_w(pivot_pos1, pivot_pos2, pos1, pos2,fps = 100)
+    angle_1 = calculate_angle(pivot_pos1, pos1)
+    angle_2 = calculate_angle(pivot_pos2, pos2)
+    w = (angle_2 - angle_1) * fps
+
+    return w
+end
+
+
+#function to show pendulum video extension
+function create_extended_overlay_gif(positions1_extended, positions2_extended, video_end_frame, fps=50, filename="extended_overlay.gif")
+    println("Creating extended overlay gif...")
+    
+    steps = length(positions1_extended)
+    
+    # Calculate max length
+    anchor = position(0, 0)
+    L1 = distance(anchor, positions1_extended[1])
+    L2 = distance(positions1_extended[1], positions2_extended[1])
+    max_length = L1 + L2
+    
+    # Create title observable FIRST
+    title_obs = Observable("Tracking Video (1/$(video_end_frame))")
+    
+    fig = Figure(size=(600, 600)) 
+    # Pass the observable when creating the axis
+    ax = GLMakie.Axis(fig[1, 1], title=title_obs, 
+                      limits=((-max_length, max_length), (-max_length, max_length)))
+    
+    # Observables for positions
+    line1_obs = Observable([Point2f(0.0, 0.0), Point2f(positions1_extended[1].x, positions1_extended[1].y)])
+    line2_obs = Observable([Point2f(positions1_extended[1].x, positions1_extended[1].y), Point2f(positions2_extended[1].x, positions2_extended[1].y)])
+    dot1_obs = Observable([Point2f(positions1_extended[1].x, positions1_extended[1].y)])
+    dot2_obs = Observable([Point2f(positions2_extended[1].x, positions2_extended[1].y)])
+    
+    # Create plots
+    lines!(ax, line1_obs, color=:blue, linewidth=2)
+    lines!(ax, line2_obs, color=:red, linewidth=2)
+    scatter!(ax, dot1_obs, color=:blue, markersize=15)
+    scatter!(ax, dot2_obs, color=:red, markersize=15)
+    
+    @time record(fig, filename, 1:steps; framerate=fps) do i
+        p1 = positions1_extended[i]
+        p2 = positions2_extended[i]
+        
+        # Update positions
+        line1_obs[] = [Point2f(0.0, 0.0), Point2f(p1.x, p1.y)]
+        line2_obs[] = [Point2f(p1.x, p1.y), Point2f(p2.x, p2.y)]
+        dot1_obs[] = [Point2f(p1.x, p1.y)]
+        dot2_obs[] = [Point2f(p2.x, p2.y)]
+        
+        # Update title when transitioning from video to prediction
+        if i <= video_end_frame
+            title_obs[] = "Tracking Video ($(i)/$(video_end_frame))"
+        else
+            title_obs[] = "Prediction ($(i - video_end_frame)/$(steps - video_end_frame))"
+        end
+    end
+    
+    println("Extended overlay gif created: $filename")
+end

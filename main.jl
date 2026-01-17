@@ -5,7 +5,16 @@ include("helpers.jl")
 #analyse video
 path = "First_video_2s.mp4"
 positions1_ana, positions2_ana = analyse_video(path)
+
 #adapt analysis output to be compatible 
+first_pos1_ana = positions1_ana[1]
+first_pos2_ana = positions2_ana[2]
+
+L1_pix = sqrt( (first_pos1_ana[1]-first_pos2_ana[1])^2 + (first_pos1_ana[2] - first_pos2_ana[2])^2)
+L1_m = 0.09174
+ppm = L1_pix/L1_m
+
+
 positions1_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions1_ana]
 positions2_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions2_ana]
 
@@ -15,13 +24,6 @@ positions2_ana_f = [position(p[1], p[2]) for p in positions2_ana_resized]
 #define start variables-----
 dt = 0.0005          # it is strongly recommended that 1/fps of reference video /dt be an Int to be able to compare on perfect time 
 time = 2    #s
-
-first_pos1_ana = positions1_ana[1]
-first_pos2_ana = positions2_ana[2]
-
-L1_pix = sqrt( (first_pos1_ana[1]-first_pos2_ana[1])^2 + (first_pos1_ana[2] - first_pos2_ana[2])^2)
-L1_m = 0.09174
-ppm = L1_pix/L1_m
 
 anchor = position(0,0)
 point1 = position(first_pos1_ana[1]/ppm,first_pos1_ana[2]/ppm)
@@ -33,7 +35,7 @@ m2 = 1.0
 w1_init = 0
 w2_init = 0
 
-method = "euler"
+method = "rk4"
 
 
 
@@ -58,13 +60,36 @@ positions2_sim_f = positions2_sim[1:ratio:end]
 
 
 println("MSE: ", compute_mse(positions2_sim_f,positions2_ana_f))
-println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance))
+println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
 
 
-#create gifs
+#compute start parameters from video end----
+last_pos1_ana = positions1_ana_f[end]
+last_pos2_ana = positions2_ana_f[end]
+tolast_pos1_ana = positions1_ana_f[end-1]
+tolast_pos2_ana = positions2_ana_f[end-1]
 
+w1_init = calculate_w(anchor,anchor,tolast_pos1_ana,last_pos1_ana)
+w2_init = calculate_w(tolast_pos1_ana,last_pos1_ana,tolast_pos2_ana,last_pos2_ana)
 
-create_comparison_gif(positions1sim_framed,positions2sim_framed,positions1_ana_final,positions2_ana_final)
+positions1_extend, positions2_extend = simulate(anchor, last_pos1_ana, last_pos2_ana, w1_init, w2_init, m1, m2, dt, 1, method)
+
+#adapt simulated positions to be compatible with timeframe
+positions1_extend_f = positions1_extend[1:ratio:end]
+positions2_extend_f = positions2_extend[1:ratio:end]
+
+#extend existing tracking
+positions1_extended_f = vcat(positions1_ana_f, positions1_extend_f)
+positions2_extended_f = vcat(positions2_ana_f, positions2_extend_f)
+
+#create gifs---------
+
+#comparison
+create_comparison_gif(positions1_sim_f,positions2_sim_f,positions1_ana_f,positions2_ana_f)
+
+#video_extension
+video_end_frame = length(positions1_ana_f)
+create_extended_overlay_gif(positions1_extended_f, positions2_extended_f, video_end_frame)
 
 println("done")
 
