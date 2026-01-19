@@ -137,7 +137,7 @@ function compute_numerical_gradient(p)
 end
 
 function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, method,
-        max_iterations = 50,
+        max_iterations = 100,
         learning_rate = 0.3,
         beta1 = 0.9,
         beta2 = 0.999,
@@ -332,4 +332,19 @@ function plot_energy(time,dt, kinetic_energies, potential_energies, total_energi
     println("Energy plot saved: $filename")
     
     return fig
+end
+
+#calculate standard deviations 
+function standard_deviation(x)
+    n = length(x)
+    mu = sum(x) / n
+
+    var = 0.0
+    for xi in x
+        var += (xi - mu)^2
+    end
+
+    var /= (n - 1)  
+
+    return sqrt(var)
 end

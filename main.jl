@@ -64,10 +64,13 @@ println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_to
 
 #calculate energies
 kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)
-energy_diff = total_energies[end]-total_energies[1]
-println("energy difference: ", energy_diff)
+energy_drift = total_energies[end]-total_energies[1]
+println("energy drift: ", energy_drift)
+max_energy_diff = maximum(total_energies)-minimum(total_energies)
 energy_accuaracy = energy_diff/total_energies[1]*100
-println("energy accuracy percentage : ", energy_accuaracy)
+println("worst energy accuracy percentage : ", energy_accuaracy)
+energy_standard_dev = standard_deviation(total_energies)
+println("energy standard deviation : ", energy_standard_dev)
 
 plot_energy(time,dt, kinetic_energies, potential_energies, total_energies)
 
@@ -99,7 +102,7 @@ positions2_extended_f = vcat(positions2_ana_f, positions2_extend_f)
 #create gifs---------
 
 #comparison
-#create_comparison_gif(positions1_sim_f,positions2_sim_f,positions1_ana_f,positions2_ana_f)
+create_comparison_gif(positions1_sim_f,positions2_sim_f,positions1_ana_f,positions2_ana_f)
 
 #video_extension
 video_end_frame = length(positions1_ana_f)
