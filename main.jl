@@ -10,10 +10,12 @@ positions1_ana, positions2_ana = analyse_video(path)
 first_pos1_ana = positions1_ana[1]
 first_pos2_ana = positions2_ana[2]
 
-L1_pix = sqrt( (first_pos1_ana[1]-first_pos2_ana[1])^2 + (first_pos1_ana[2] - first_pos2_ana[2])^2)
+
+L1_pix = sqrt( (first_pos1_ana[1])^2 + (first_pos2_ana[2])^2)
 L1_m = 0.09174
 ppm = L1_pix/L1_m
-
+L2_pix = sqrt( (first_pos1_ana[1]-first_pos2_ana[1])^2 + (first_pos1_ana[2] - first_pos2_ana[2])^2)
+L2_m = L2_pix / ppm
 
 positions1_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions1_ana]
 positions2_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions2_ana]
@@ -29,7 +31,7 @@ anchor = position(0,0)
 point1 = position(first_pos1_ana[1]/ppm,first_pos1_ana[2]/ppm)
 point2 = position(first_pos2_ana[1]/ppm,first_pos2_ana[2]/ppm)
 
-m1 = 10.0
+m1 = 5.0
 m2 = 1.0
 
 w1_init = 0
@@ -49,7 +51,7 @@ w2_init = best_params[3]
 
 
 #launch simulation-----
-positions1_sim, positions2_sim = simulate(anchor, point1, point2, w1_init, w2_init, m1, m2, dt, time, method)
+positions1_sim, positions2_sim, w1s, w2s = simulate(anchor, point1, point2, w1_init, w2_init, m1, m2, dt, time, method)
 
 ratio = Int(floor(length(positions1_sim)/length(positions1_ana)))
 
@@ -62,6 +64,9 @@ positions2_sim_f = positions2_sim[1:ratio:end]
 println("MSE: ", compute_mse(positions2_sim_f,positions2_ana_f))
 println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
 
+#calculate energies
+kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, L1_m, L2_m, m1, m2, g)
+plot_energy(time,dt, kinetic_energies, potential_energies, total_energies)
 
 #compute start parameters from video end----
 fps = 100

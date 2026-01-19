@@ -125,6 +125,9 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method, verbo
     theta1s = [theta1]
     theta2s = [theta2]
 
+    w1s = [w1]
+    w2s = [w2]
+
     verbose && println("simulating physics....")
 
     if method == "rk4"
@@ -132,12 +135,16 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method, verbo
             w1, w2, theta1, theta2 = rk4_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
             append!(theta1s,theta1)
             append!(theta2s,theta2)
+            append!(w1s,w1)
+            append!(w2s,w2)
         end
     else
         for i in 2:steps
             w1, w2, theta1, theta2 = euler_step(g,L1,L2,m1,m2,w1,w2,theta1,theta2,dt)
             append!(theta1s,theta1)
             append!(theta2s,theta2)
+            append!(w1s,w1)
+            append!(w2s,w2)
         end
     end
 
@@ -155,7 +162,7 @@ function simulate(anchor, point1, point2, w1, w2, m1, m2, dt, time,method, verbo
 
     verbose && println("simulation done ")
 
-    return positions1, positions2
+    return positions1, positions2, w1s, w2s
 
 end
 
