@@ -9,7 +9,6 @@ function create_comparison_gif(positions1_sim, positions2_sim, positions1_ana, p
     L1_sim = distance(anchor, positions1_sim[1])
     L2_sim = distance(positions1_sim[1], positions2_sim[1])
     max_length = L1_sim + L2_sim
-    println(max_length,L1_sim,L2_sim)
     
     fig = Figure(size=(1200, 600)) 
     
