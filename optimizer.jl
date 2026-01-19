@@ -70,7 +70,7 @@ end
 
 function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, method, verbose,
         max_iterations = 100,
-        learning_rate = 0.03,
+        learning_rate = 0.05,
         beta1 = 0.5,
         beta2 = 0.999,
         epsilon_adam = 1e-8)
