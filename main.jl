@@ -14,8 +14,6 @@ first_pos2_ana = positions2_ana[2]
 L1_pix = sqrt( (first_pos1_ana[1])^2 + (first_pos2_ana[2])^2)
 L1_m = 0.09174
 ppm = L1_pix/L1_m
-L2_pix = sqrt( (first_pos1_ana[1]-first_pos2_ana[1])^2 + (first_pos1_ana[2] - first_pos2_ana[2])^2)
-L2_m = L2_pix / ppm
 
 positions1_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions1_ana]
 positions2_ana_resized = [(x/ppm, y/ppm) for (x, y) in positions2_ana]
@@ -65,7 +63,12 @@ println("MSE: ", compute_mse(positions2_sim_f,positions2_ana_f))
 println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
 
 #calculate energies
-kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, L1_m, L2_m, m1, m2, g)
+kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)
+energy_diff = total_energies[end]-total_energies[1]
+println("energy difference: ", energy_diff)
+energy_accuaracy = energy_diff/total_energies[1]*100
+println("energy accuracy percentage : ", energy_accuaracy)
+
 plot_energy(time,dt, kinetic_energies, potential_energies, total_energies)
 
 #compute start parameters from video end----

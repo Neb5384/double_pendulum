@@ -284,13 +284,13 @@ function potential_energy(m1,m2,pos1,pos2,g) # mgh
     return potential_energy
 end
 
-function total_energy(m1,m2,w1,w2,L1,L2,pos1,pos2,g)
+function total_energy(m1,m2,w1,w2,pos1,pos2,g)
     total_energy = kinetic_energy(m1,m2,w1,w2, pos1, pos2) + potential_energy(m1,m2,pos1,pos2,g)
     return total_energy
 end
 
 #apply energy calculations on list
-function compute_energy_trajectory(positions1, positions2, w1s, w2s, L1, L2, m1, m2, g)
+function compute_energy_trajectory(positions1, positions2, w1s, w2s, m1, m2, g)
 
     kinetic_energies = []
     potential_energies = []
