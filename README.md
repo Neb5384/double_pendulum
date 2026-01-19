@@ -1,12 +1,12 @@
-#double_pendulum
+# double_pendulum
 
 physics project that is a double pendulum simulation
 
-##double_pendulum.jl
+## double_pendulum.jl
 contains the physic equations, and the simulation with euler / RK4
 
-##analysis.jl
+## analysis.jl
 analyses video to get the centroids of the masses, will be used to compare to simulation
 
-##main.jl
+## main.jl
 will call both and make comparisons. (todo)
