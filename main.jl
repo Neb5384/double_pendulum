@@ -1,6 +1,9 @@
 include("double_pendulum.jl")
 include("analysis.jl")
 include("helpers.jl")
+include("plotters.jl")
+include("optimizer.jl")
+include("energies.jl")
 
 #analyse video
 path = "First_video_2s.mp4"
@@ -58,9 +61,13 @@ ratio = Int(floor(length(positions1_sim)/length(positions1_ana)))
 positions1_sim_f = positions1_sim[1:ratio:end]
 positions2_sim_f = positions2_sim[1:ratio:end]
 
+mse = compute_mse(positions2_sim_f,positions2_ana_f,length(positions2_ana_f))
+time_acc = time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)
+limited_mse = compute_mse(positions2_sim_f,positions2_ana_f,time_acc)
 
-println("MSE: ", compute_mse(positions2_sim_f,positions2_ana_f))
+println("MSE: ", mse)
 println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
+println("Limited MSE: ", limited_mse)
 
 #calculate energies
 kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)
