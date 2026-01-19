@@ -1,5 +1,6 @@
 # double_pendulum
 physics project that is a double pendulum simulation
+
 Repository: [Neb5384/double_pendulum](https://github.com/Neb5384/double_pendulum)
 ## main.jl
 - runs simulation and video analysis
