@@ -29,7 +29,7 @@ makes every plot needed
 ## helpers.jl
 de-cluster main
 
-
+## outputs
 ![analysis / simulation comparison](pendulum_comparison.gif)
 ![energy over time of simulation](energy_plot.png)
 ![video extension](extended_overlay.gif)
