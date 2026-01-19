@@ -14,7 +14,7 @@ first_pos1_ana = positions1_ana[1]
 first_pos2_ana = positions2_ana[2]
 
 
-L1_pix = sqrt( (first_pos1_ana[1])^2 + (first_pos2_ana[2])^2)
+L1_pix = sqrt( (first_pos1_ana[1])^2 + (first_pos1_ana[2])^2)
 L1_m = 0.09174
 ppm = L1_pix/L1_m
 
