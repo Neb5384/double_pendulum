@@ -64,19 +64,25 @@ println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_to
 
 
 #compute start parameters from video end----
+fps = 100
+halfstep = 8
+stepsize = 2*halfstep
 last_pos1_ana = positions1_ana_f[end]
 last_pos2_ana = positions2_ana_f[end]
-tolast_pos1_ana = positions1_ana_f[end-1]
-tolast_pos2_ana = positions2_ana_f[end-1]
+tolast_pos1_ana = positions1_ana_f[end-stepsize]
+tolast_pos2_ana = positions2_ana_f[end-stepsize]
+midlast_pos1_ana = positions1_ana_f[end-halfstep]
+midlast_pos2_ana = positions2_ana_f[end-halfstep]
 
-w1_init = calculate_w(anchor,anchor,tolast_pos1_ana,last_pos1_ana)
-w2_init = calculate_w(tolast_pos1_ana,last_pos1_ana,tolast_pos2_ana,last_pos2_ana)
+w1_init = calculate_w(anchor,anchor,tolast_pos1_ana,last_pos1_ana,fps,stepsize)
+w2_init = calculate_w(tolast_pos1_ana,last_pos1_ana,tolast_pos2_ana,last_pos2_ana,fps,stepsize)
 
-positions1_extend, positions2_extend = simulate(anchor, last_pos1_ana, last_pos2_ana, w1_init, w2_init, m1, m2, dt, 1, method)
+positions1_extend, positions2_extend = simulate(anchor, midlast_pos1_ana, midlast_pos2_ana, w1_init, w2_init, m1, m2, dt, 1+halfstep/fps, method)
+
 
 #adapt simulated positions to be compatible with timeframe
-positions1_extend_f = positions1_extend[1:ratio:end]
-positions2_extend_f = positions2_extend[1:ratio:end]
+positions1_extend_f = positions1_extend[ratio*halfstep:ratio:end]
+positions2_extend_f = positions2_extend[ratio*halfstep:ratio:end]
 
 #extend existing tracking
 positions1_extended_f = vcat(positions1_ana_f, positions1_extend_f)
@@ -85,7 +91,7 @@ positions2_extended_f = vcat(positions2_ana_f, positions2_extend_f)
 #create gifs---------
 
 #comparison
-create_comparison_gif(positions1_sim_f,positions2_sim_f,positions1_ana_f,positions2_ana_f)
+#create_comparison_gif(positions1_sim_f,positions2_sim_f,positions1_ana_f,positions2_ana_f)
 
 #video_extension
 video_end_frame = length(positions1_ana_f)

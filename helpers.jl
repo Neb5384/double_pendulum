@@ -194,10 +194,12 @@ function calculate_angle(position1, position2)
     return atan(x, y)
 end
 
-function calculate_w(pivot_pos1, pivot_pos2, pos1, pos2,fps = 100)
+function calculate_w(pivot_pos1, pivot_pos2, pos1, pos2, fps, step)
     angle_1 = calculate_angle(pivot_pos1, pos1)
     angle_2 = calculate_angle(pivot_pos2, pos2)
-    w = (angle_2 - angle_1) * fps
+    angle_diff = angle_2 - angle_1
+    angle_diff = mod(angle_diff + pi, 2pi) - pi
+    w = angle_diff * fps / step
 
     return w
 end
