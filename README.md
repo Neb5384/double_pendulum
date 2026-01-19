@@ -23,7 +23,7 @@ runs an adam-estimation to try to find m1/m2, w1_init and w2_init
 analyses kinetic, potential and total energy
 and standard deviation
 
-## plotters.jl
+## plotters.jl
 makes every plot needed
 
 ## helpers.jl
