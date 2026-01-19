@@ -1,5 +1,5 @@
 #comparison gif------
-function create_comparison_gif(positions1_sim, positions2_sim, positions1_ana, positions2_ana, fps=50, filename="pendulum_comparison.gif")
+function create_comparison_gif(positions1_sim, positions2_sim, positions1_ana, positions2_ana, fps=100, slow_factor = 2, filename="pendulum_comparison.gif")
     println("Creating comparison gif...")
     
     steps = min(length(positions1_sim), length(positions1_ana))
@@ -44,7 +44,7 @@ function create_comparison_gif(positions1_sim, positions2_sim, positions1_ana, p
     scatter!(ax2, dot1_ana_obs, color=:blue, markersize=15)
     scatter!(ax2, dot2_ana_obs, color=:red, markersize=15)
     
-    @time record(fig, filename, 1:steps; framerate=fps) do i
+    @time record(fig, filename, 1:steps; framerate=Int(fps/slow_factor)) do i
         # Update simulation
         p1_sim = positions1_sim[i]
         p2_sim = positions2_sim[i]
@@ -66,7 +66,7 @@ function create_comparison_gif(positions1_sim, positions2_sim, positions1_ana, p
 end
 
 #function to show pendulum video extension
-function create_extended_overlay_gif(positions1_extended, positions2_extended, video_end_frame, fps=50, filename="extended_overlay.gif")
+function create_extended_overlay_gif(positions1_extended, positions2_extended, video_end_frame, fps=100, slow_factor = 2, filename="extended_overlay.gif")
     println("Creating extended overlay gif...")
     
     steps = length(positions1_extended)
@@ -97,7 +97,7 @@ function create_extended_overlay_gif(positions1_extended, positions2_extended, v
     scatter!(ax, dot1_obs, color=:blue, markersize=15)
     scatter!(ax, dot2_obs, color=:red, markersize=15)
     
-    @time record(fig, filename, 1:steps; framerate=fps) do i
+    @time record(fig, filename, 1:steps; framerate=Int(fps/slow_factor)) do i
         p1 = positions1_extended[i]
         p2 = positions2_extended[i]
         

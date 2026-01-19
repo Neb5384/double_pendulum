@@ -99,7 +99,7 @@ midlast_pos2_ana = positions2_ana_f[end-halfstep]
 w1_init = calculate_w(anchor,anchor,tolast_pos1_ana,last_pos1_ana,fps,stepsize)
 w2_init = calculate_w(tolast_pos1_ana,last_pos1_ana,tolast_pos2_ana,last_pos2_ana,fps,stepsize)
 
-positions1_extend, positions2_extend = simulate(anchor, midlast_pos1_ana, midlast_pos2_ana, w1_init, w2_init, m1, m2, dt, 1+halfstep/fps, method)
+positions1_extend, positions2_extend = simulate(anchor, midlast_pos1_ana, midlast_pos2_ana, w1_init, w2_init, m1, m2, dt, 1+(halfstep-1)/fps, method)
 
 
 #adapt simulated positions to be compatible with timeframe
