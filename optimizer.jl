@@ -69,7 +69,7 @@ function compute_numerical_gradient(p)
 end
 
 function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, method, verbose,
-        max_iterations = 100,
+        max_iterations = 350,
         learning_rate = 0.05,
         beta1 = 0.5,
         beta2 = 0.999,

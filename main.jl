@@ -72,11 +72,14 @@ println("Limited RMSE: ", sqrt(limited_mse))
 
 #calculate energies
 kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)
+
 energy_drift = total_energies[end]-total_energies[1]
 println("energy drift: ", energy_drift)
+
 max_energy_diff = maximum(total_energies)-minimum(total_energies)
-energy_accuaracy = energy_diff/total_energies[1]*100
+energy_accuaracy = max_energy_diff/total_energies[1]*100
 println("worst energy accuracy percentage : ", energy_accuaracy)
+
 energy_standard_dev = standard_deviation(total_energies)
 println("energy standard deviation : ", energy_standard_dev)
 
