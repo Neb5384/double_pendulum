@@ -44,7 +44,7 @@ method = "rk4"
 
 #compute best parameters---------
 max_tolerance = 0.03
-best_params = adam_optimize(point1,point2,w1_init,w2_init,m1, m2, dt, time, method)
+best_params = adam_optimize(point1,point2,w1_init,w2_init,m1, m2, dt, time, method,false)
 
 m1 = best_params[1]
 w1_init = best_params[2]
@@ -65,9 +65,10 @@ mse = compute_mse(positions2_sim_f,positions2_ana_f,length(positions2_ana_f))
 time_acc = time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)
 limited_mse = compute_mse(positions2_sim_f,positions2_ana_f,time_acc)
 
-println("MSE: ", mse)
+println("RMSE: ", sqrt(mse))
+println("with tolerance of : ", max_tolerance)
 println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
-println("Limited MSE: ", limited_mse)
+println("Limited RMSE: ", sqrt(limited_mse))
 
 #calculate energies
 kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)

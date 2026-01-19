@@ -68,10 +68,10 @@ function compute_numerical_gradient(p)
     return grad
 end
 
-function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, method,
-        max_iterations = 50,
-        learning_rate = 0.1,
-        beta1 = 0.8,
+function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, method, verbose,
+        max_iterations = 100,
+        learning_rate = 0.03,
+        beta1 = 0.5,
         beta2 = 0.999,
         epsilon_adam = 1e-8)
 
@@ -109,10 +109,11 @@ function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, metho
         if current_score > best_score
             best_score = current_score
             best_params = copy(params)
-            println("[V]Iter $iter: score = $(round(current_score, digits=4)), params = $(round.(params, digits=3))")
+            verbose && println("[V]Iter $iter: score = $(round(current_score, digits=4)), params = $(round.(params, digits=3))")
         else
-            println("   Iter $iter: score = $(round(current_score, digits=4)), params = $(round.(params, digits=3))")
+            verbose && println("   Iter $iter: score = $(round(current_score, digits=4)), params = $(round.(params, digits=3))")
         end
     end
+    println("optimization done, params: ", best_params)
     return best_params
 end
