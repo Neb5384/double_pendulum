@@ -65,23 +65,23 @@ mse = compute_mse(positions2_sim_f,positions2_ana_f,length(positions2_ana_f))
 time_acc = time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)
 limited_mse = compute_mse(positions2_sim_f,positions2_ana_f,time_acc)
 
-println("RMSE: ", sqrt(mse))
-println("with tolerance of : ", max_tolerance)
-println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f))
-println("Limited RMSE: ", sqrt(limited_mse))
+println("RMSE: ", sqrt(mse)," m")
+println("with tolerance of : ", max_tolerance," m")
+println("time-accuracy: ",time_accuracy(positions2_sim_f,positions2_ana_f,max_tolerance)," out of ",length(positions1_sim_f)," frames")
+println("Limited RMSE: ", sqrt(limited_mse)," m")
 
 #calculate energies
 kinetic_energies, potential_energies, total_energies = compute_energy_trajectory(positions1_sim, positions2_sim, w1s, w2s, m1, m2, g)
 
 energy_drift = total_energies[end]-total_energies[1]
-println("energy drift: ", energy_drift)
+println("energy drift: ", energy_drift," J")
 
 max_energy_diff = maximum(total_energies)-minimum(total_energies)
 energy_accuaracy = max_energy_diff/total_energies[1]*100
-println("worst energy accuracy percentage : ", energy_accuaracy)
+println("worst energy accuracy percentage : ", energy_accuaracy, "%")
 
 energy_standard_dev = standard_deviation(total_energies)
-println("energy standard deviation : ", energy_standard_dev)
+println("energy standard deviation : ", energy_standard_dev," J")
 
 plot_energy(time,dt, kinetic_energies, potential_energies, total_energies)
 

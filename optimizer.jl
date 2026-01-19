@@ -85,7 +85,7 @@ function adam_optimize(point1, point2, w1_init, w2_init, m1, m2, dt, time, metho
 
     println("Starting Adam Optimization")
 
-    for iter in 1:max_iterations
+    @time for iter in 1:max_iterations
 
         gradient = compute_numerical_gradient(params)
         
